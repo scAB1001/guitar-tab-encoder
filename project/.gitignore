@@ -1,0 +1,27 @@
+# Byte-compiled files
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Environments
+.env
+.venv/
+poetry.lock
+
+# Virtualenvs
+*.egg-info/
+.eggs/
+.env/
+*.venv/
+.Python
+
+# Jupyter
+.ipynb_checkpoints/
+
+# VS Code
+.vscode/
+
+# Data & models
+project/data/raw/
+project/data/processed/
+project/saved_models/

@@ -1,0 +1,37 @@
+[tool.poetry]
+name = "osr"
+version = "0.1.0"
+description = "Guitar tab recognition and processing into my encoding"
+authors = ["Andreas Bazigos <bazigosa@gmail.com>"]
+readme = "README.md"
+packages = [{ include = "osr", from = "project/src" }]
+
+[tool.poetry.dependencies]
+python = ">=3.9,<3.10"
+matplotlib= "3.6.3"
+numpy= "1.26.4"
+pillow= "11.1.0"
+tensorflow= "2.19.0"
+opencv-python= "4.11.0.86"
+python-dotenv= "1.0.1"
+rich= "13.7.0"
+
+[tool.poetry.scripts]
+train = "osr.app:main"
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 100
+target-version = ["py38"]
+
+[tool.mypy]
+python_version = "3.9"
+ignore_missing_imports = true
+check_untyped_defs = true
+
+[tool.ruff]
+line-length = 100
+target-version = "py38"
