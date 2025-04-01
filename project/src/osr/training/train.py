@@ -45,7 +45,7 @@ def train():
     if not os.path.exists(BEST_MODEL_PATH):
         save_best = True
     else:
-        from tensorflow.keras.models import load_model
+        from tensorflow.keras.models import load_model # type: ignore
         best_model = load_model(BEST_MODEL_PATH)
         best_val_acc = best_model.evaluate(X_train, y_train, verbose=0)[1]
         save_best = val_acc > best_val_acc
