@@ -33,12 +33,11 @@ def load_training_data():
     X, y = [], []
     chord_folders = []
 
-    # Walk through all subdirs to collect label folders (leaf folders)
+    # Recursively find valid leaf folders (folders that contain image files)
     for root, dirs, files in os.walk(DATA_DIR):
-        for d in dirs:
-            full_path = os.path.join(root, d)
-            if os.listdir(full_path):  # skip empty
-                chord_folders.append(full_path)
+        image_files = [f for f in files if f.lower().endswith((".jpg", ".jpeg", ".png"))]
+        if image_files:
+            chord_folders.append(root)
 
     # Create label map using folder names only (e.g. "a_major")
     class_names = sorted([os.path.basename(path) for path in chord_folders])
@@ -48,6 +47,7 @@ def load_training_data():
     for folder_path in chord_folders:
         label_name = os.path.basename(folder_path)
         label = label_map[label_name]
+        
         for file in os.listdir(folder_path):
             if file.lower().endswith((".jpg", ".jpeg", ".png")):
                 img_path = os.path.join(folder_path, file)

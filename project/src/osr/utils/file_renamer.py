@@ -50,7 +50,7 @@ def rename_screenshots_in_dir(category: str, chord_name: str) -> None:
             new_path = dir_path / new_name
             
             if file.name == new_name:
-                print("Files have already been converted.")
+                print(f"Files for {chord_name}/ have already been converted.")
                 return
 
             try:
@@ -62,7 +62,26 @@ def rename_screenshots_in_dir(category: str, chord_name: str) -> None:
                 print(f"Error renaming {file}: {error}")
 
 
+def rename_entire_chord_type(chord_type: str) -> None:
+    chord_type_path = BASE_PATH / chord_type
+    
+    if not chord_type_path.exists() or not chord_type_path.is_dir():
+        print(f"Directory not found: {chord_type_path}")
+        return
+    
+    for chord in chord_type_path.iterdir():
+        if chord.is_dir():
+            rename_screenshots_in_dir(chord_type, chord.name)
+    
+
+def rename_chords() -> None:
+    for dir in BASE_PATH.iterdir():
+        if dir.is_dir():
+            rename_entire_chord_type(dir.name)
+
 if __name__ == "__main__":
     # print_folder_sizes(BASE_PATH)
     # print(collect_chord_dirs(only_non_empty=True))
-    rename_screenshots_in_dir("add", "d_add9")
+    # rename_screenshots_in_dir("add", "d_add9")
+    # rename_entire_chord_type("add")
+    rename_chords()
