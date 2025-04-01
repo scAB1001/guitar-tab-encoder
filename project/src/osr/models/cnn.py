@@ -3,10 +3,14 @@
 Defines the CNN architecture for detecting tab positions in guitar tab images.
 """
 from keras import layers, models, Input
+from osr.data.augmentor import get_augmentation_pipeline
 
 def build_cnn_model(input_shape=(128, 128, 1), num_classes=24):
+    data_augmentation = get_augmentation_pipeline()
+    
     model = models.Sequential([
         Input(shape=input_shape),
+        data_augmentation,
         layers.Conv2D(32, (3, 3), activation='relu'),
         layers.MaxPooling2D(2, 2),
         layers.Conv2D(64, (3, 3), activation='relu'),

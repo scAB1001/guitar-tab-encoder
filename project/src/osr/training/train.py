@@ -7,6 +7,7 @@ os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
 
 from osr.models.cnn import build_cnn_model
 from osr.data.loader import load_training_data
+from osr.training.metrics import plot_training_curves
 from osr.config import IMG_SIZE, ALL_VERSIONS_PATH, LATEST_MODEL_PATH, BEST_MODEL_PATH
 
 
@@ -16,7 +17,7 @@ def save_label_map(label_map: dict, path: str):
 
 
 def train():
-    
+
     def save_model_instance(model_path: str):
         model.save(model_path)
         label_path = model_path.replace(".keras", "_labels.json")
@@ -25,9 +26,9 @@ def train():
     
     print("[INFO] Loading training data...")
     X_train, y_train, label_map, _ = load_training_data()
-    print(f"[INFO] Classes found: {label_map}")
+    print(f"[INFO] Classes found: {json.dumps(label_map, indent=2)}")
 
-    print("[INFO] Building model...")
+    print("\n[INFO] Building model...")
     model = build_cnn_model(input_shape=(IMG_SIZE, IMG_SIZE, 1), num_classes=len(label_map))
 
     print("[INFO] Training model...")
@@ -36,7 +37,7 @@ def train():
         y_train, 
         epochs=10, 
         batch_size=32, 
-        validation_split=0.2, 
+        validation_split=0.1, 
         verbose=1
     )
 
@@ -45,7 +46,7 @@ def train():
     versioned_model_path = os.path.join(ALL_VERSIONS_PATH, f"cnn_model_{timestamp}.keras")
 
     # Save all 3 versions
-    print(f"[INFO] Saving model to: {save_model_instance(versioned_model_path)}")
+    print(f"\n[INFO] Saving model to: {save_model_instance(versioned_model_path)}")
 
     print(f"[INFO] Saving model as latest: {save_model_instance(LATEST_MODEL_PATH)}")
 
@@ -73,9 +74,12 @@ def train():
 
     if save_best:
         print(f"[INFO] New best model found (val_accuracy={val_acc:.4f}) → saved to: {save_model_instance(BEST_MODEL_PATH)}")
-        
     else:
         print(f"[INFO] Current model val_accuracy={val_acc:.4f} did not improve on best model.")
+    
+    print(f"\n[INFO] Generating training metrics...")
+    plot_training_curves(history)
+    
 
 if __name__ == "__main__":
     train()

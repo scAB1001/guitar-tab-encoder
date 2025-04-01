@@ -4,7 +4,7 @@ A computer vision project that detects and converts guitar tab images into a cus
 
 ---
 
-## 🎯 Project Goal
+## Project Goal
 
 Translate guitar tab images into a symbolic format like:
 
@@ -20,7 +20,7 @@ The system is designed to support **any valid guitar tab**, including:
 
 ---
 
-## 🌐 Scope and Vision
+## Scope and Vision
 
 OSR is not limited to any single notation or tuning. The project is intended to be:
 
@@ -28,7 +28,7 @@ OSR is not limited to any single notation or tuning. The project is intended to 
 - Fret-range agnostic
 - Capo-aware
 
-### ♻️ Upcoming Enhancements
+### Upcoming Enhancements
 
 - ✅ Dynamic tuning support
 - ✅ Capo-aware position translation
@@ -36,7 +36,7 @@ OSR is not limited to any single notation or tuning. The project is intended to 
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 | Path                            | Description                                                                 |
 |---------------------------------|-----------------------------------------------------------------------------|
@@ -57,7 +57,7 @@ OSR is not limited to any single notation or tuning. The project is intended to 
 
 ---
 
-## ✅ Getting Started
+## Getting Started
 
 ### 1. Build File Structure
 
@@ -117,7 +117,7 @@ dependencies = [
 
 ---
 
-## ⚖️ Running Training
+## Running Trainer
 
 Run training from the OSR root directory:
 
@@ -126,11 +126,20 @@ $env:PYTHONPATH="project/src"
 python -m osr.training.train
 ```
 
+## Running Generator
+
+Run synthetic image generation
+
+```powershell
+$env:PYTHONPATH="project/src"
+python -m osr.data.generator
+```
+
 This uses the correct `src/` layout and keeps your imports clean and modular.
 
 ---
 
-## 🔮 Running Prediction
+## Running Prediction
 
 To predict from a new image:
 
@@ -150,7 +159,7 @@ You’ll see something like:
 
 ---
 
-## 🚀 Tech Stack
+## Tech Stack
 
 - **TensorFlow** – Deep learning framework
 - **OpenCV** – Image preprocessing and transformation
@@ -160,7 +169,7 @@ You’ll see something like:
 
 ---
 
-## 📊 Future Improvements
+## Future Improvements
 
 - Add data augmentation to avoid overfitting
 - Support multi-label classification for individual finger/string/fret detection
@@ -169,6 +178,6 @@ You’ll see something like:
 
 ---
 
-## 📆 Last Verified
+## Last Verified
 
 > ✅ Last verified working on **Windows 11 + Python 3.9 + Poetry 1.8.2 + TensorFlow 2.19.0**
