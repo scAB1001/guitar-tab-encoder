@@ -12,9 +12,11 @@ STRING_TO_INDEX = {s: i for i, s in enumerate(STRING_LABELS)}
 def interpret_chord(chord: str) -> list[tuple[int, str]]:
     """
     Parses a chord string into a list of (fret, string) tuples.
-    - Supports multi-digit frets (e.g. '10A')
-    - Allows delimiters (space, comma, etc.)
-    - Interprets 'E' alone as (0, 'E')
+    Supports:
+    - Multi-digit frets (e.g. '10A')
+    - Multiple strings per fret (e.g. '4Ee' → [(4, 'E'), (4, 'e')])
+    - Delimiters (e.g. space, comma)
+    - Open strings like 'E' → (0, 'E')
     """
     result = []
     buffer = ""  # collect characters between delimiters
@@ -28,20 +30,22 @@ def interpret_chord(chord: str) -> list[tuple[int, str]]:
         # Encountered whitespace, must be end of note    
         else:
             if buffer:
-                result.append(parse_fret_string(buffer))
+                result.extend(parse_fret_string(buffer))
                 buffer = ""  # Reset the buffer
     
     # If there's anything left in the buffer, parse and append it
     if buffer:
-        result.append(parse_fret_string(buffer))
+        result.extend(parse_fret_string(buffer))
 
     return result
 
 
 def parse_fret_string(token: str) -> tuple[int, str]:
     """
-    Converts a string like '2B' or '10A' to (2, 'B').
-    If the token is just a string letter (e.g., 'E'), it's treated as open string (0 fret).
+    Interprets:
+    - '2B'        → [(2, 'B')]
+    - '4Ee'       → [(4, 'E'), (4, 'e')]
+    - 'E'         → [(0, 'E')]
     """
     if token.isalpha() and len(token) == 1:
         return (0, token())
@@ -50,11 +54,11 @@ def parse_fret_string(token: str) -> tuple[int, str]:
     for i, ch in enumerate(token):
         if ch.isalpha():
             fret = int(token[:i]) if i > 0 else 0
-            string = token[i:]
-            return (fret, string)
+            
+            # Create a new position for each letter after the fret number
+            return [(fret, s) for s in token[i:]]
 
     raise ValueError(f"Invalid token: '{token}'")
-
 
 
 def create_synthetic_tab_image(
@@ -149,7 +153,7 @@ def preview_chord_image(interactive_frets: list[tuple[int, str]]):
     Tuple format: (fret_number, string_label), e.g. (1, 'B')
     """
     img = create_synthetic_tab_image(fret_positions=interactive_frets)
-    # img.show()
+    img.show()
     
     # img.close()
 
@@ -159,7 +163,7 @@ if __name__ == "__main__":
 
     # Interactive preview example
     # Example: C major = 1st fret on B, 2nd fret on D, 3rd fret on A
-    preview_chord_image([(1, 'B'), (1, 'G'), (2, 'D'), (3, 'A')])
+    # preview_chord_image([(1, 'B'), (1, 'G'), (2, 'D'), (3, 'A'), (4, 'e'), (4, 'E')])
     
     # interpret_chord("1B 2D 3A")
-    interpret_chord("1BG, 2D, 3A, 4eE")
+    print(interpret_chord("1BG2D3A4eE"))
