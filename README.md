@@ -1,107 +1,117 @@
 # OSR: Optical String Reader for Guitar Tablature
 
-A computer vision project that detects and converts guitar tab images into a custom structured notation. The system leverages image classification and machine learning to recognize chord positions from tab diagrams and translate them into fret-string or note-based representations.
+A computer vision pipeline that detects and converts guitar tab images into a structured symbolic notation. The system uses convolutional neural networks (CNNs) and image classification to recognize chord positions and translate them into a concise representation like `1B`, `2D/E`, `3A/C`.
 
 ---
 
-## Project Goal
+## 🎯 Project Goals
 
-Translate guitar tab images into a symbolic format like:
+- Recognize fretted positions from guitar chord diagrams
+- Translate those positions into notation like `1B` (1st fret, B string)
+- Support **any valid tab**, not just standard tuning or first-position chords
 
-- Input: Image showing a **C major chord**
-- Output: `1B`, `2D/E`, `3A/C`
-  - Meaning: 1st fret on B string = C note, 2nd fret on D string = E, 3rd fret on A string = C
+### Supported Notation Examples
 
-The system is designed to support **any valid guitar tab**, including:
+- `1BD` → 1st fret, B and D string
+- `3A/C` → 3rd fret on A string producing note C
+- `0E` or `E` → Open E string
 
-- Alternate tunings (e.g., Drop D, DADGAD)
-- Full fretboard range (not limited to the first 3 frets)
-- Capo use and transpositions
+### Intelligent Design Goals
 
----
-
-## Scope and Vision
-
-OSR is not limited to any single notation or tuning. The project is intended to be:
-
-- Tuning-agnostic
-- Fret-range agnostic
-- Capo-aware
-
-### Upcoming Enhancements
-
-- ✅ Dynamic tuning support
-- ✅ Capo-aware position translation
-- ✅ Smart tab-to-notation mapping (e.g., from shape to musical context)
+- ✅ Alternate tuning and capo handling
+- ✅ Full fretboard support
+- ✅ Encoding for output such as string-note or string-fret
 
 ---
 
-## Project Structure
+## 📦 Current Achievements
 
-| Path                            | Description                                                                 |
-|---------------------------------|-----------------------------------------------------------------------------|
-| `src/osr/`                      | Main Python package                                                        |
-| `config.py`                    | Project-wide constants and paths                                           |
-| `app.py`                       | CLI or main entry point (future use)                                       |
-| `data/loader.py`              | Loads and labels training image data                                       |
-| `models/cnn.py`               | Defines the CNN architecture using TensorFlow/Keras                        |
-| `training/train.py`           | Trains the model and saves it                                              |
-| `training/metrics.py`         | Metrics and performance evaluation (TBD)                                   |
-| `inference/predict.py`        | Loads model and predicts from new images                                   |
-| `utils/image_utils.py`        | OpenCV and Pillow helpers for preprocessing                                |
-| `notebooks/`                  | Prototyping, exploratory analysis                                           |
-| `data/tab_samples/`           | Labeled training data (e.g., c_major/, g_major/, etc.)                     |
-| `data/raw/`                   | Unprocessed tab image samples                                              |
-| `data/processed/`             | Preprocessed tab images (resized, binarized, etc.)                         |
-| `pyproject.toml`              | Poetry configuration (dependencies, interpreter, paths)                   |
+- ✅ Functional CNN model using Keras + TensorFlow
+- ✅ Augmentation pipeline for more robust learning
+- ✅ Synthetic tab generator with fretboard + finger positions
+- ✅ CLI-based trainer and predictor
+- ✅ Modular project layout using Poetry
+- ✅ Automatic best model tracking + visual metric plots
 
 ---
 
-## Getting Started
+## 📁 Project Structure
 
-### 1. Build File Structure
-
-```powershell
-mkdir -Force project/src/osr
-mkdir -Force project/src/osr/{data,models,training,inference,utils}
-mkdir -Force project/notebooks
-mkdir -Force project/data/{raw,processed,tab_samples}
+```plaintext
+osr/
+├── pyproject.toml              # Poetry setup and dependency management
+└── project/
+    ├── src/osr/
+    │   ├── app.py              # CLI entry point
+    │   ├── config.py           # Global constants
+    │   ├── data/
+    │   │   ├── loader.py       # Data loading for training
+    │   │   └── generator.py    # Synthetic image generator
+    │   ├── models/
+    │   │   └── cnn.py          # CNN model definition
+    │   ├── training/
+    │   │   ├── train.py        # Training logic
+    │   │   └── metrics.py      # Metric plotting
+    │   ├── inference/
+    │   │   └── predict.py      # Inference script
+    │   ├── utils/
+    │   │   └── image_utils.py  # Preprocessing helpers (OpenCV + Pillow)
+    ├── data/
+    │   ├── tab_samples/        # Chord-labeled image folders
+    │   ├── raw/                # Raw input samples
+    │   └── processed/          # Preprocessed image output
+    ├── saved_models/           # Trained model versions
+    ├── reports/                # Training visualizations (plots)
+    └── notebooks/              # Prototyping + exploration
 ```
 
-### 2. Create Module Files
+---
+
+## 🚀 Quick Start
+
+### Poetry Setup
 
 ```powershell
-New-Item project/src/osr/__init__.py -ItemType File
-New-Item project/src/osr/config.py -ItemType File
-New-Item project/src/osr/app.py -ItemType File
-New-Item project/src/osr/data/loader.py -ItemType File
-New-Item project/src/osr/models/cnn.py -ItemType File
-New-Item project/src/osr/training/train.py -ItemType File
-New-Item project/src/osr/training/metrics.py -ItemType File
-New-Item project/src/osr/inference/predict.py -ItemType File
-New-Item project/src/osr/utils/image_utils.py -ItemType File
-New-Item project/notebooks/experimentation.ipynb -ItemType File
-New-Item project/README.md -ItemType File
-New-Item project/.gitignore -ItemType File
-```
-
-### 3. Poetry Environment Setup
-
-```powershell
-# From OSR/ root
-poetry lock --no-cache --regenerate   # Create a lock file
-
-# Remove all self-installed plugins (clean reset)
-poetry self clear-cache
-poetry self remove poetry-plugin-shell
-poetry self show plugins
-
+# From OSR/ root directory
 poetry self add poetry-plugin-shell   # (Optional)
-poetry env use python3.9              # Select Python 3.9
-poetry install                        # Install all dependencies
+poetry lock --no-cache --regenerate   # Create a lock file
+poetry self show plugins              # View dependencies
+
+poetry env use python3.9
+poetry install
 ```
 
-Add your packages in `pyproject.toml`:
+### Run the Trainer
+
+```powershell
+python -m osr.training.train
+```
+
+### Run the Generator
+
+```powershell
+python -m osr.data.generator
+```
+
+### Predict From Image
+
+```powershell
+python -m osr.inference.predict project/data/raw/sample1.png
+```
+
+Output:
+
+```powershell
+[INFO] Loading model...
+[INFO] Predicting...
+[RESULT] Predicted class: c_major (confidence: 0.92)
+```
+
+---
+
+## 🧪 Poetry Dependencies
+
+Inside `pyproject.toml`:
 
 ```toml
 dependencies = [
@@ -117,67 +127,76 @@ dependencies = [
 
 ---
 
-## Running Trainer
-
-Run training from the OSR root directory:
-
-```powershell
-$env:PYTHONPATH="project/src"
-python -m osr.training.train
-```
-
-## Running Generator
-
-Run synthetic image generation
-
-```powershell
-$env:PYTHONPATH="project/src"
-python -m osr.data.generator
-```
-
-This uses the correct `src/` layout and keeps your imports clean and modular.
-
----
-
-## Running Prediction
-
-To predict from a new image:
-
-```powershell
-$env:PYTHONPATH="project/src"
-python -m osr.inference.predict project/data/tab_samples/c_major/sample1.jpg
-```
-
-You’ll see something like:
-
-```powershell
-[INFO] Loading model...
-[INFO] Loading image from ...
-[INFO] Predicting...
-[RESULT] Predicted class: c_major (confidence: 0.92)
-```
-
----
-
 ## Tech Stack
 
-- **TensorFlow** – Deep learning framework
-- **OpenCV** – Image preprocessing and transformation
-- **Pillow** – Image loading and resizing
-- **Poetry** – Dependency and environment management
-- **VS Code** – IDE with Pylance for linting/type checking
+- **TensorFlow / Keras** – Deep learning
+- **OpenCV** – Image preprocessing
+- **Pillow** – Image loading and augmentation
+- **Poetry** – Python dependency management
+- **Matplotlib** – Plotting training curves
+- **VS Code** – Development and debugging
 
 ---
 
-## Future Improvements
+## Future Directions
 
-- Add data augmentation to avoid overfitting
-- Support multi-label classification for individual finger/string/fret detection
-- Export to various formats (MIDI, MusicXML, tab notation)
-- Web frontend (Streamlit or FastAPI)
+- Multi-label prediction: detect multiple fingers/strings
+- Output to MIDI, MusicXML or ASCII tabs
+- Real-time prediction web app (Streamlit / FastAPI)
+- Pretrained base model integration
+- Export best metrics for leaderboard comparisons
 
 ---
 
-## Last Verified
+## ✅ Last Verified
 
-> ✅ Last verified working on **Windows 11 + Python 3.9 + Poetry 1.8.2 + TensorFlow 2.19.0**
+> **Windows 11 + Python 3.9 + Poetry 1.8.2 + TensorFlow 2.19.0**
+
+---
+
+## Git Setup
+
+### Ignore Unnecessary Files
+
+`.gitignore` at the root (OSR/):
+
+```plaintext
+__pycache__/
+*.py[cod]
+.vscode/
+.env/
+.venv/
+poetry.lock
+project/data/raw/
+project/data/processed/
+project/saved_models/
+project/reports/
+```
+
+### First Commit
+
+```powershell
+git init
+git remote add origin https://github.com/YOUR_USERNAME/YOUR_REPO.git
+git checkout -b main
+git add .
+git commit -m "Initial commit: Guitar tab recognition framework"
+git push -u origin main
+```
+
+---
+
+## 📈 How to Evaluate
+
+- Use `training/metrics.py` to save loss/accuracy curves
+- Saved as timestamped `.png` plots under `project/reports/`
+- Models saved in:
+  - `saved_models/all_versions/`
+  - `cnn_model_latest.keras`
+  - `cnn_model_best.keras`
+
+---
+
+## Contributing
+
+If you have ideas for better tab rendering, fret logic, dataset improvements, or model refinements — PRs are welcome!
