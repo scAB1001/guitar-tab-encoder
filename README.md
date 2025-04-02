@@ -96,8 +96,8 @@ poetry self clear-cache
 poetry self remove poetry-plugin-shell
 poetry self show plugins
 
-poetry self add poetry-plugin-shell   # (Optional) adds `poetry shell`
-poetry env use python3.9              # Select Python 3.9 for this project
+poetry self add poetry-plugin-shell   # (Optional)
+poetry env use python3.9              # Select Python 3.9
 poetry install                        # Install all dependencies
 ```
 
