@@ -57,4 +57,5 @@ def load_training_data():
 
     X = np.array(X).reshape(-1, IMG_SIZE, IMG_SIZE, 1)
     y = np.array(y)
+    
     return X, y, label_map, reverse_label_map

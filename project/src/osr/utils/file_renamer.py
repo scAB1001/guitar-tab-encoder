@@ -35,31 +35,48 @@ def collect_chord_dirs(only_non_empty: bool = False) -> List[Path]:
 
 def rename_screenshots_in_dir(category: str, chord_name: str) -> None:
     """
-    Rename all files in the specified chord directory with a standardized naming pattern.
+    Renames files in the given chord folder using basic string slicing,
+    ensuring consistent numeric suffixes without gaps or duplicates.
     """
     dir_path = BASE_PATH / category / chord_name
     base_file_name = f"{chord_name}_tab_"
 
     if not dir_path.exists() or not dir_path.is_dir():
-        print(f"Directory not found: {dir_path}")
+        print(f"[SKIP] Directory not found: {dir_path}")
         return
 
-    for i, file in enumerate(sorted(dir_path.iterdir())):
-        if file.is_file():
-            new_name = f"{base_file_name}{i + 1}.png"
-            new_path = dir_path / new_name
-            
-            if file.name == new_name:
-                print(f"Files for {chord_name}/ have already been converted.")
-                return
+    def extract_number(filename: str) -> int:
+        """
+        Extracts the numeric suffix from a filename assuming format:
+        <chord_name>_tab_<number>.png
+        """
+        try:
+            stem = filename.rsplit(".", 1)[0]              # Remove extension
+            num_part = stem.rsplit("_", 1)[-1]             # Get number after last '_'
+            return int(num_part)
+        except (ValueError, IndexError):
+            return float('inf')  # Push unmatchables to the end
 
+    # Get sorted list of files by suffix number
+    files = sorted(
+        [f for f in dir_path.iterdir() if f.is_file() and f.suffix == ".png"],
+        key=lambda f: extract_number(f.name)
+    )
+
+    for i, file in enumerate(files, start=1):
+        new_name = f"{base_file_name}{i}.png"
+        new_path = dir_path / new_name
+
+        if file.name != new_name:
             try:
                 file.rename(new_path)
-                print(f"Renamed: {file.name} -> {new_name}")
+                print(f"[RENAME] {file.name} → {new_name}")
             except PermissionError:
-                print(f"Permission denied: {file}")
-            except OSError as error:
-                print(f"Error renaming {file}: {error}")
+                print(f"[ERROR] Permission denied: {file}")
+            except OSError as e:
+                print(f"[ERROR] Failed to rename {file}: {e}")
+        else:
+            print(f"[SKIP] Already correct: {file.name}")
 
 
 def rename_entire_chord_type(chord_type: str) -> None:

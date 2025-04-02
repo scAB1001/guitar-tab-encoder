@@ -171,8 +171,14 @@ def preview_chord_image(interactive_frets: list[tuple[int, str]]):
 
 
 if __name__ == "__main__":
+    from osr.utils.file_renamer import rename_chords
+    
+    # Generate synthetic tabs
     populate_synthetic_tabs(target_count_per_class=40)
-
+    
+    # Ensure naming consistency across all chord folders
+    rename_chords()
+    
     # Interactive preview example: C augmented = 1B 1G 2D 3A 4E 4e
     # preview_chord_image("1BG2D3A4Ee")
     
