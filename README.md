@@ -75,27 +75,22 @@ osr/
 # From OSR/ root directory
 poetry self add poetry-plugin-shell   # (Optional)
 poetry lock --no-cache --regenerate   # Create a lock file
-poetry self show plugins              # View dependencies
+poetry self show plugins
 
 poetry env use python3.9
-poetry install
+poetry install                        # Install dependencies
 ```
 
-### Run the Trainer
+### Running the program
 
 ```powershell
+# Trainer
 python -m osr.training.train
-```
 
-### Run the Generator
-
-```powershell
+# Generator
 python -m osr.data.generator
-```
 
-### Predict From Image
-
-```powershell
+# Predict from an image
 python -m osr.inference.predict project/data/raw/sample1.png
 ```
 
